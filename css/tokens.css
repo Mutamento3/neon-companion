@@ -1,0 +1,59 @@
+/* ==========================================================
+   颜色、字体、尺寸全在这一个文件里。想换皮只改这里。
+   改完刷新页面就生效；HUD 边框、心潮颜色、气泡都会跟着变。
+   ========================================================== */
+:root {
+  /* —— 底色 —— */
+  --bg: #0A0918;            /* 整页底色 */
+  --bg-deep: #07061A;       /* 代码块、工具卡这种更深的底 */
+  --panel: #0F0C24;         /* 主窗口卡、审批卡里面 */
+  --bg-glow: #170D35;       /* 页面中间那团深紫 */
+
+  /* —— 三个主色 —— */
+  --pink: #FF5FD2;          /* 主强调：选中、未读、你的气泡边、警示 */
+  --cyan: #5FE3FF;          /* 第二强调：在线、终端、TA 的气泡边、HUD 外框 */
+  --violet: #8B5CFF;        /* 细线、分隔、渐变收尾 */
+  --blue: #3A7BFF;          /* HUD 粗条渐变的另一头 */
+  --lilac: #B79BFF;         /* API 标签、文件图标 */
+  --ink-on-pink: #1A0418;   /* 粉色按钮上的字 */
+  --ink-on-cyan: #04161C;   /* 青色按钮上的字 */
+
+  /* —— 字色 —— */
+  --ink-hi: #F7F4FF;        /* 标题、名字 */
+  --ink: #ECE8FF;           /* 正文 */
+  --ink-2: #C9C3E6;         /* 次要正文、预览 */
+  --muted: #9C95C2;         /* 小字、时间 */
+  --muted-2: #7D76A6;       /* 更淡的小字 */
+  --off: #6E6894;           /* 离线、未连接 */
+
+  /* —— 线 —— */
+  --line: rgba(139, 92, 255, .6);
+  --line-soft: rgba(139, 92, 255, .22);
+
+  /* —— 气泡（你 / TA）—— */
+  --me-bubble: #3A1446;
+  --me-border-a: var(--pink);
+  --me-border-b: var(--violet);
+  --ta-bubble: #0F1E3A;
+  --ta-border-a: var(--cyan);
+  --ta-border-b: var(--violet);
+  --chat-font: 14px;        /* 聊天字号 */
+
+  /* —— 心潮颜色：冷 → 暖。情绪越暖越接近 --warm —— */
+  --cold: var(--cyan);
+  --warm: var(--pink);
+
+  /* —— 光晕强度 0 ~ 1 —— */
+  --glow: .6;
+
+  /* —— 字体（最多三种）—— */
+  --font: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-thin: 'Raleway', 'Noto Sans SC', sans-serif;   /* 细体英文、大数字 */
+  --font-mono: 'Share Tech Mono', ui-monospace, Menlo, monospace;
+
+  /* —— 尺寸 —— */
+  --app-max: 480px;         /* 电脑上看时手机列的最大宽度 */
+  --status-h: max(44px, env(safe-area-inset-top));     /* 顶部留给手机状态栏 */
+  --safe-b: max(30px, env(safe-area-inset-bottom));    /* 底部横条安全区 */
+  --tab-h: 62px;            /* 底栏按钮区高度（不含安全区） */
+}
