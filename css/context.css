@@ -1,0 +1,39 @@
+/* 09 上下文：右边滑出来的一页 */
+.ctx-mask { position: absolute; inset: 0; z-index: 25; background: rgba(4, 3, 12, 0); transition: background .22s; }
+.ctx-mask.in { background: rgba(4, 3, 12, .62); }
+.ctx { position: absolute; top: 0; right: 0; bottom: 0; width: min(342px, 88%); padding: 1px 0 0 1px; background: linear-gradient(180deg, var(--cyan), var(--violet) 50%, var(--pink)); clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%, 0 22px); transform: translateX(100%); transition: transform .22s ease-out; }
+.ctx-mask.in .ctx { transform: none; }
+.ctx > div { height: 100%; overflow-y: auto; padding: calc(var(--status-h) + 16px) 20px var(--safe-b) 22px; background: #0D0A1E; clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%, 0 22px); display: flex; flex-direction: column; gap: 16px; scrollbar-width: none; }
+.ctx header { display: flex; align-items: flex-start; justify-content: space-between; }
+.ctx header div { display: flex; flex-direction: column; gap: 4px; }
+.ctx header span { font-family: var(--font-mono); font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+.ctx header b { font-weight: 300; font-size: 24px; letter-spacing: .2em; color: var(--ink-hi); }
+.ctx header .ibtn { width: 40px; height: 40px; }
+.ctx-top { display: flex; align-items: center; gap: 18px; }
+.ctx-top svg { width: 132px; height: 132px; flex: none; }
+.ctx-top svg circle[stroke-width="7"] { filter: drop-shadow(0 0 3px currentColor); }
+.ctx-top > div { display: flex; flex-direction: column; gap: 6px; }
+.ctx-top b { font-family: var(--font-thin); font-weight: 200; font-size: 54px; line-height: 1; color: var(--cyan); text-shadow: 0 0 14px var(--cyan); }
+.ctx-top b.warn { color: #FFD36B; text-shadow: 0 0 14px #FFD36B; }
+.ctx-top b.hot { color: var(--pink); text-shadow: 0 0 14px var(--pink); }
+.ctx-top b small { font-size: 22px; }
+.ctx-top span { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); }
+.ctx-top em { font-style: normal; font-size: 11px; font-weight: 300; color: var(--muted); }
+.ctx-bar { display: flex; height: 8px; gap: 2px; background: color-mix(in srgb, var(--violet) 15%, transparent); }
+.ctx-bar i { display: block; }
+.ctx-list { display: flex; flex-direction: column; border: 1px solid var(--line-soft); }
+.ctx-list > div { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-bottom: 1px solid color-mix(in srgb, var(--violet) 15%, transparent); }
+.ctx-list > div:last-child { border-bottom: 0; }
+.ctx-list i { width: 8px; height: 8px; flex: none; }
+.ctx-list .free i { border: 1px solid var(--line); }
+.ctx-list span { flex: 1; font-size: 13px; color: var(--ink); }
+.ctx-list .free span, .ctx-list .free b { color: var(--muted); }
+.ctx-list b { font-weight: 400; font-size: 12px; color: var(--ink-2); }
+.ctx-list em { width: 36px; text-align: right; font-style: normal; font-size: 11px; color: var(--muted-2); }
+.ctx-info { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 300; color: #B9B2DA; }
+.ctx-info div { display: flex; justify-content: space-between; }
+.ctx-info b { font-weight: 400; color: var(--cyan); }
+.ctx-info b.dim { color: var(--muted); }
+.ctx-go { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+.ctx-go .btn { height: 46px; font-size: 14px; letter-spacing: .16em; box-shadow: 0 0 16px color-mix(in srgb, var(--pink) 45%, transparent); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+.ctx-go span { font-size: 11px; font-weight: 300; line-height: 1.6; color: var(--muted); }

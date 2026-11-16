@@ -130,3 +130,7 @@ a { color: var(--cyan); }
 .btn.pink { background: var(--pink); border-color: var(--pink); color: var(--ink-on-pink); font-weight: 500; }
 .btn.cyan { background: var(--cyan); border-color: var(--cyan); color: var(--ink-on-cyan); font-weight: 500; }
 .btn:hover { border-color: var(--pink); }
+
+/* 键盘聚焦时用主题色描边，不用浏览器默认的蓝框 */
+.ibtn:focus-visible, .btn:focus-visible, .tab:focus-visible { outline: 1px solid var(--pink); outline-offset: 2px; }
+.ibtn:focus:not(:focus-visible), .btn:focus:not(:focus-visible) { outline: none; }

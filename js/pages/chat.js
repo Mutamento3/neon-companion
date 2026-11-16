@@ -334,12 +334,8 @@ window.NEON = window.NEON || {};
       const act = b.dataset.act, wrap = b.closest('[data-id]'), rec2 = wrap && msgs.get(wrap.dataset.id), m = rec2?.m;
       if (act === 'photo' || act === 'camera' || act === 'file') pick(act);
       if (act === 'cmd') { ta.value = '/'; ta.focus(); inBox.removeAttribute('data-tray'); slash(); drawHud(); }
-      if (act === 'call') { try { await N.api.call(id); } catch (err) { N.toast(err.message); } }
-      if (act === 'ring') {
-        const c = await N.api.context(id);
-        const ok = await N.confirm({ title: '压缩上下文', text: `现在用了 ${Math.round((c.used / c.max) * 100)}%（${Math.round(c.used / 1000)}K / ${Math.round(c.max / 1000)}K）。压缩会把前面的对话总结成一小段，聊天记录还在。`, ok: '压缩' });
-        if (ok) { setRing(await N.api.compact(id)); N.toast('压缩好了'); }
-      }
+      if (act === 'call') { inBox.removeAttribute('data-tray'); drawHud(); N.call.start(id); }
+      if (act === 'ring') N.ctxPanel.open(id);   // 09 上下文页（压缩后圆环会收到 context 事件自己更新）
       if (act === 'fold') { const t = b.closest('.think'); const open = !t.hasAttribute('data-open'); t.toggleAttribute('data-open', open); b.setAttribute('aria-expanded', open); }
       if (act === 'tool') { const t = b.closest('.tool'); const open = !t.hasAttribute('data-open'); t.toggleAttribute('data-open', open); b.setAttribute('aria-expanded', open); }
       if (act === 'copy' && m) { navigator.clipboard?.writeText(m.text).then(() => N.toast('复制了')); }
@@ -376,6 +372,8 @@ window.NEON = window.NEON || {};
       }
     });
 
+    // 截预览图 / 录演示用：?ctx 打开上下文页，?call 打开通话
+    { const u = new URLSearchParams(location.search); if (u.has('ctx')) setTimeout(() => N.ctxPanel.open(id), 300); if (u.has('call')) setTimeout(() => N.call.start(id), 300); }
     const ro = new ResizeObserver(drawHud); ro.observe(root); ro.observe(inBox);
     return () => { unsub(); clearInterval(stTimer); stopRec(); audio?.pause(); ro.disconnect(); };
   };

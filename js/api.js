@@ -191,6 +191,7 @@ window.NEON = window.NEON || {};
         const h = histLocal(id); h.splice(0, Math.max(0, h.length - 20)); saveHist(id);
       }
       const c = await api.context(id); local.ctx[id] = { used: Math.round(c.used * 0.25), max: c.max };
+      local.compactedAt = { ...(local.compactedAt || {}), [id]: Date.now() };
       emit(id, { type: 'context', ...local.ctx[id] });
       return local.ctx[id];
     },
@@ -304,11 +305,32 @@ window.NEON = window.NEON || {};
       return { points: Array.from({ length: 36 }, (_, i) => Math.max(0, Math.min(1, value + (r() - 0.5) * 0.35 - (35 - i) * 0.004))), why: c.mode === 'mock' ? '示例：这股驱力为什么涨落的一句话。' : '' };
     },
 
-    // 语音通话：交给 PaiVoice（https://github.com/tianyupaipai-cmd/pai-voice）
-    async call(id) {
-      if (window.PaiVoice && conn().paivoice) return window.PaiVoice.start({ server: conn().paivoice, window: id });
-      throw new Error('通话要接 PaiVoice，见接入说明');
+    // 挂断后记一行「通话 m:ss」进这个窗口的聊天记录（role: sys）
+    // TODO 接后端：PaiVoice 那边挂断时后端自己记，连同这通电话的转写一起进上下文；前端收到 part.add 就会显示
+    async logCall(id, seconds, captions = []) {
+      const label = '通话 ' + String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+      if (conn().mode === 'bridge') { try { await bridgeFetch(`/v1/windows/${id}/call-log`, { method: 'POST', body: JSON.stringify({ seconds, captions }) }); } catch (e) { } return; }
+      const m = { id: uid(), role: 'sys', type: 'divider', label: '◢ ' + label, time: Date.now() };
+      histLocal(id).push(m); saveHist(id); emit(id, { type: 'part.add', msg: m });
+      touchWindow(id, { last: '[' + label + ']' });
     },
+
+    // 上下文明细（右上角圆环点开的那一页）
+    // → { used, max, parts: [{ key, label, tokens }], autoAt: 0–1, compactedAt, turnTokens }
+    // key: system（人设和规则）| memory（记忆、心潮念这些注入的）| chat（聊天记录）| tools（工具调用和结果）| files（图片文件）
+    // TODO 接后端：GET /v1/windows/{id}/context?detail=1。终端窗口可以照 Claude Code 的 /context 输出拆
+    async contextDetail(id) {
+      if (conn().mode === 'bridge') { try { return await bridgeFetch(`/v1/windows/${id}/context?detail=1`); } catch (e) { } }
+      const c = await api.context(id);
+      const w = windowsLocal().find((x) => x.id === id);
+      const term = w && w.via === 'terminal';
+      const share = term ? { system: 0.12, memory: 0.06, chat: 0.22, tools: 0.52, files: 0.08 } : { system: 0.1, memory: 0.18, chat: 0.6, tools: 0, files: 0.12 };
+      const LABEL = { system: '人设和规则', memory: '记忆 · 心潮念', chat: '聊天记录', tools: '工具调用和结果', files: '图片和文件' };
+      const parts = Object.entries(share).filter(([, v]) => v > 0).map(([key, v]) => ({ key, label: LABEL[key], tokens: Math.round(c.used * v) }));
+      return { used: c.used, max: c.max, parts, autoAt: 0.8, compactedAt: local.compactedAt?.[id] || null, turnTokens: term ? 6000 : 1800 };
+    },
+
+    // 语音通话：在 js/call.js + js/call-driver.js（接 PaiVoice，https://github.com/tianyupaipai-cmd/pai-voice）
 
     // ================= 朋友圈 =================
     // 没接后端时（mock / direct）朋友圈和相册只存在这一次打开的页面里，刷新就回到演示数据
